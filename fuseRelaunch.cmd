@@ -1,0 +1,1 @@
+-intstyle "ise" -incremental -lib "secureip" -o "/home/jarot/sources/rv32i/risc-cpu-v2/program_counter_tb_isim_beh.exe" -prj "/home/jarot/sources/rv32i/risc-cpu-v2/program_counter_tb_beh.prj" "work.program_counter_tb" 
