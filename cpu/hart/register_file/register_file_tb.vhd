@@ -46,8 +46,6 @@ architecture behavior of register_file_tb is
         o_data_a : out std_logic_vector(31 downto 0);
         o_data_b : out std_logic_vector(31 downto 0);
         i_data_d : in std_logic_vector(31 downto 0);
-        i_oe_a : in std_logic;
-        i_oe_b : in std_logic;
         i_we_d : in std_logic
         );
     end component;
@@ -59,8 +57,6 @@ architecture behavior of register_file_tb is
     signal i_addr_b : integer range 0 to 31 := 0;
     signal i_addr_d : integer range 0 to 31 := 0;
     signal i_data_d : std_logic_vector(31 downto 0) := (others => '0');
-    signal i_oe_a : std_logic := '0';
-    signal i_oe_b : std_logic := '0';
     signal i_we_d : std_logic := '0';
 
     --Outputs
@@ -82,8 +78,6 @@ begin
         o_data_a => o_data_a,
         o_data_b => o_data_b,
         i_data_d => i_data_d,
-        i_oe_a => i_oe_a,
-        i_oe_b => i_oe_b,
         i_we_d => i_we_d
         );
 
@@ -108,20 +102,16 @@ begin
         i_we_d <= '0';
         wait for i_clk_period;
         
-        i_oe_a <= '1';
         for i in 0 to 31 loop
             i_addr_a <= i;
             wait for i_clk_period;
         end loop;
-        i_oe_a <= '0';
         wait for i_clk_period;
         
-        i_oe_b <= '1';
         for i in 0 to 31 loop
             i_addr_b <= i;
             wait for i_clk_period;
         end loop;
-        i_oe_b <= '0';
         wait for i_clk_period;
         
         i_reset <= '1';
