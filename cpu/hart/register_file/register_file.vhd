@@ -36,8 +36,6 @@ entity register_file is
         o_data_a : out std_logic_vector(31 downto 0);
         o_data_b : out std_logic_vector(31 downto 0);
         i_data_d : in std_logic_vector(31 downto 0);
-        i_oe_a : in std_logic;
-        i_oe_b : in std_logic;
         i_we_d : in std_logic
     );
 end register_file;
@@ -61,25 +59,20 @@ begin
                 s_data_a <= (others => '0');
                 s_data_b <= (others => '0');
             else
-                if i_oe_a = '1' then
-                    if i_addr_a = 0 then
-                        s_data_a <= (others => '0');
-                    else
-                        s_data_a <= s_register_file(i_addr_a);
-                    end if;
+                if i_addr_a = 0 then
+                    s_data_a <= (others => '0');
+                else
+                    s_data_a <= s_register_file(i_addr_a);
                 end if;
-                
-                if i_oe_b = '1' then
-                    if i_addr_b = 0 then
-                        s_data_b <= (others => '0');
-                    else
-                        s_data_b <= s_register_file(i_addr_b);
-                    end if;
+            
+                if i_addr_b = 0 then
+                    s_data_b <= (others => '0');
+                else
+                    s_data_b <= s_register_file(i_addr_b);
                 end if;
                 
                 if i_we_d = '1' then
                     if i_addr_d = 0 then
-                    
                     else
                         s_register_file(i_addr_d) <= i_data_d;
                     end if;
