@@ -66,5 +66,8 @@ xst/
 _ngo/
 _xmsgs/
 
-# ip examples
-ipcore_dir/LPDDR_CONTROLLER/example_design
+# log files
+*.log
+
+# vhdl instantiation files
+*.vhi
