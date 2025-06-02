@@ -77,17 +77,25 @@ begin
             if i_reset = '1' then
                 s_result <= (others => '0');
             else
-                case i_func is
-                    when "0000" => s_result <= s_addition;
-                    when "1000" => s_result <= s_subtraction;
-                    when "0001" => s_result <= signed(s_shift_left_logical);
-                    when "0010" => s_result <= s_set_less_than;
-                    when "0011" => s_result <= s_set_less_than_unsigned;
-                    when "0100" => s_result <= s_xor;
-                    when "0101" => s_result <= signed(s_shift_right_logical);
-                    when "1101" => s_result <= s_shift_right_arithmetic;
-                    when "0110" => s_result <= s_or;
-                    when "0111" => s_result <= s_and;
+                case i_func(2 downto 0) is
+                    when "000" =>
+                        if i_func(3) = '0' then
+                            s_result <= s_addition;
+                        else
+                            s_result <= s_subtraction;
+                        end if;
+                    when "001" => s_result <= signed(s_shift_left_logical);
+                    when "010" => s_result <= s_set_less_than;
+                    when "011" => s_result <= s_set_less_than_unsigned;
+                    when "100" => s_result <= s_xor;
+                    when "101" =>
+                        if i_func(3) = '0' then
+                            s_result <= signed(s_shift_right_logical);
+                        else
+                            s_result <= s_shift_right_arithmetic;
+                        end if;
+                    when "110" => s_result <= s_or;
+                    when "111" => s_result <= s_and;
                     when others => s_result <= (others => '0');
                 end case;
             end if;
