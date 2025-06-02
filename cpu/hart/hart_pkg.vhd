@@ -31,14 +31,31 @@ package hart_pkg is
         result_select : t_result_select;
     end record;
     
+    constant OPCODE_LUI : std_logic_vector(4 downto 0) := "01101";
+    constant OPCODE_AUIPC : std_logic_vector(4 downto 0) := "00101";
+    constant OPCODE_JAL : std_logic_vector(4 downto 0) := "11011";
+    constant OPCODE_JALR : std_logic_vector(4 downto 0) := "11001";
+    constant OPCODE_BRANCH : std_logic_vector(4 downto 0) := "11000";
+    constant OPCODE_LOAD : std_logic_vector(4 downto 0) := "00000";
+    constant OPCODE_STORE : std_logic_vector(4 downto 0) := "01000";
+    constant OPCODE_OP_IMM : std_logic_vector(4 downto 0) := "00100";
+    constant OPCODE_OP : std_logic_vector(4 downto 0) := "01100";
+    constant OPCODE_MISC_MEM : std_logic_vector(4 downto 0) := "00011";
+    constant OPCODE_SYSTEM : std_logic_vector(4 downto 0) := "11100";
+    
+    constant ALU_SRC_A_RS1 : std_logic := '0';
+    constant ALU_SRC_A_PC : std_logic := '1';
+    constant ALU_SRC_B_RS2 : std_logic := '0';
+    constant ALU_SRC_B_IMM : std_logic := '1';
+    
     constant CONTROL_SIGNALS_DEFAULT : t_control_signals := (
         ra => 0,
         rb => 0,
         rd => 0,
         funct3 => (others => '0'),
         funct4 => (others => '0'),
-        alu_src_a => '0',
-        alu_src_b => '0',
+        alu_src_a => ALU_SRC_A_RS1,
+        alu_src_b => ALU_SRC_B_RS2,
         jump => '0',
         branch => '0',
         mem_read => '0',
