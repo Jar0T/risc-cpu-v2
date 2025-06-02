@@ -23,6 +23,7 @@ use ieee.numeric_std.all;
 
 library work;
 use work.instruction_decoder_pkg.all;
+use work.hart_pkg.all;
 
 -- Uncomment the following library declaration if instantiating
 -- any Xilinx primitives in this code.
@@ -34,72 +35,109 @@ entity instruction_decoder is
         i_clk : in std_logic;
         i_reset : in std_logic;
         i_instruction : in std_logic_vector(31 downto 0);
-        o_ra : out integer range 0 to 31;
-        o_rb : out integer range 0 to 31;
-        o_rd : out integer range 0 to 31;
-        o_alu_func : out std_logic;
-        o_funct3 : out std_logic_vector(2 downto 0);
-        o_imm : out signed(31 downto 0)
+        o_imm : out signed(31 downto 0);
+        o_control_signals : out t_control_signals
     );
 end instruction_decoder;
 
 architecture Behavioral of instruction_decoder is
 
-    signal s_ra, s_rb, s_rd : integer range 0 to 31 := 0;
-    signal s_funct3 : std_logic_vector(2 downto 0) := (others => '0');
     signal s_imm : signed(31 downto 0) := (others => '0');
-    signal s_alu_func : std_logic := '0';
+    signal s_control_signals : t_control_signals := CONTROL_SIGNALS_DEFAULT;
 
 begin
 
-    o_ra <= s_ra;
-    o_rb <= s_rb;
-    o_rd <= s_rd;
-    o_funct3 <= s_funct3;
-    o_alu_func <= s_alu_func;
+    o_imm <= s_imm;
+    o_control_signals <= s_control_signals;
 
     process(i_clk)
     begin
         if rising_edge(i_clk) then
             if i_reset = '1' then
-                s_ra <= 0;
-                s_rb <= 0;
-                s_rd <= 0;
-                s_funct3 <= (others => '0');
                 s_imm <= (others => '0');
-                s_alu_func <= '0';
+                s_control_signals <= CONTROL_SIGNALS_DEFAULT;
             else
-                s_ra <= to_integer(unsigned(i_instruction(19 downto 15)));
-                s_rb <= to_integer(unsigned(i_instruction(24 downto 20)));
-                s_rd <= to_integer(unsigned(i_instruction(11 downto 7)));
-                
-                s_funct3 <= i_instruction(14 downto 12);
                 s_imm <= (others => '0');
+                
+                s_control_signals.ra <= to_integer(unsigned(i_instruction(19 downto 15)));
+                s_control_signals.rb <= to_integer(unsigned(i_instruction(24 downto 20)));
+                s_control_signals.rd <= to_integer(unsigned(i_instruction(11 downto 7)));
+                s_control_signals.funct3 <= i_instruction(14 downto 12);
+                s_control_signals.funct4 <= (others => '0');
+                s_control_signals.alu_src_a <= '0';
+                s_control_signals.alu_src_b <= '0';
+                s_control_signals.jump <= '0';
+                s_control_signals.branch <= '0';
+                s_control_signals.mem_read <= '0';
+                s_control_signals.mem_write <= '0';
+                s_control_signals.register_write <= '0';
+                s_control_signals.result_select <= ALU;
                 
                 case i_instruction(6 downto 2) is
                     when "01101" => -- LUI
                         s_imm <= decode_imm_u(i_instruction);
+                        s_control_signals.register_write <= '1';
+                        s_control_signals.result_select <= IMMEDIATE;
                     when "00101" => -- AUIPC
                         s_imm <= decode_imm_u(i_instruction);
+                        s_control_signals.funct4 <= "0000";
+                        s_control_signals.alu_src_a <= '1';
+                        s_control_signals.alu_src_b <= '1';
+                        s_control_signals.register_write <= '1';
+                        s_control_signals.result_select <= ALU;
                     when "11011" => -- JAL
                         s_imm <= decode_imm_j(i_instruction);
+                        s_control_signals.funct4 <= "0000";
+                        s_control_signals.alu_src_a <= '1';
+                        s_control_signals.alu_src_b <= '1';
+                        s_control_signals.jump <= '1';
+                        s_control_signals.register_write <= '1';
+                        s_control_signals.result_select <= PC_PLUS_4;
                     when "11001" => -- JALR
                         s_imm <= decode_imm_i(i_instruction);
+                        s_control_signals.funct4 <= "0000";
+                        s_control_signals.alu_src_a <= '0';
+                        s_control_signals.alu_src_b <= '1';
+                        s_control_signals.jump <= '1';
+                        s_control_signals.register_write <= '1';
+                        s_control_signals.result_select <= PC_PLUS_4;
                     when "11000" => -- BRANCH
                         s_imm <= decode_imm_b(i_instruction);
+                        s_control_signals.funct4 <= "0000";
+                        s_control_signals.alu_src_a <= '1';
+                        s_control_signals.alu_src_b <= '1';
+                        s_control_signals.branch <= '1';
                     when "00000" => -- LOAD
                         s_imm <= decode_imm_i(i_instruction);
+                        s_control_signals.funct4 <= "0000";
+                        s_control_signals.alu_src_a <= '0';
+                        s_control_signals.alu_src_b <= '1';
+                        s_control_signals.mem_read <= '1';
+                        s_control_signals.register_write <= '1';
+                        s_control_signals.result_select <= MEMORY;
                     when "01000" => -- STORE
                         s_imm <= decode_imm_s(i_instruction);
-                    when "00100" => -- ALUI
+                        s_control_signals.funct4 <= "0000";
+                        s_control_signals.alu_src_a <= '0';
+                        s_control_signals.alu_src_b <= '1';
+                        s_control_signals.mem_write <= '1';
+                    when "00100" => -- OP IMM
                         s_imm <= decode_imm_i(i_instruction);
                         if i_instruction(14 downto 12) = "000" then
-                            s_alu_func <= '0';
+                            s_control_signals.funct4 <= '0' & i_instruction(14 downto 12);
                         else
-                            s_alu_func <= i_instruction(30);
+                            s_control_signals.funct4 <= i_instruction(30) & i_instruction(14 downto 12);
                         end if;
-                    when "01100" => -- ALU
-                        s_alu_func <= i_instruction(30);
+                        s_control_signals.alu_src_a <= '0';
+                        s_control_signals.alu_src_b <= '1';
+                        s_control_signals.register_write <= '1';
+                        s_control_signals.result_select <= ALU;
+                    when "01100" => -- OP
+                        s_control_signals.funct4 <= i_instruction(30) & i_instruction(14 downto 12);
+                        s_control_signals.alu_src_a <= '0';
+                        s_control_signals.alu_src_b <= '0';
+                        s_control_signals.register_write <= '1';
+                        s_control_signals.result_select <= ALU;
                     when "00011" => -- MISC-MEM
                     when "11100" => -- SYSTEM
                     when others =>
