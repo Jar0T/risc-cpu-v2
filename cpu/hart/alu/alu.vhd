@@ -51,19 +51,23 @@ architecture Behavioral of alu is
     signal s_shift_right_arithmetic : signed(31 downto 0) := (others => '0');
     signal s_or : signed(31 downto 0) := (others => '0');
     signal s_and : signed(31 downto 0) := (others => '0');
+    
+    signal s_shift_amount : integer range 0 to 31 := 0;
 
 begin
 
     o_y <= s_result;
     
+    s_shift_amount <= to_integer(unsigned(i_b(4 downto 0)));
+    
     s_addition <= i_a + i_b;
     s_subtraction <= i_a - i_b;
-    s_shift_left_logical <= shift_left(unsigned(i_a), to_integer(i_b(4 downto 0)));
+    s_shift_left_logical <= shift_left(unsigned(i_a), s_shift_amount);
     s_set_less_than <= to_signed(1, s_result'length) when i_a < i_b else to_signed(0, s_result'length);
     s_set_less_than_unsigned <= to_signed(1, s_result'length) when unsigned(i_a) < unsigned(i_b) else to_signed(0, s_result'length);
     s_xor <= i_a xor i_b;
-    s_shift_right_logical <= shift_right(unsigned(i_a), to_integer(i_b(4 downto 0)));
-    s_shift_right_arithmetic <= shift_right(i_a, to_integer(i_b(4 downto 0)));
+    s_shift_right_logical <= shift_right(unsigned(i_a), s_shift_amount);
+    s_shift_right_arithmetic <= shift_right(i_a, s_shift_amount);
     s_or <= i_a or i_b;
     s_and <= i_a and i_b;
 
