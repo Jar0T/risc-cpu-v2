@@ -29,6 +29,7 @@ use ieee.numeric_std.all;
 entity mock_instr_mem is
     Port (
         i_clk : in std_logic;
+        i_reset : in std_logic;
         i_addr : in unsigned(8 downto 0);
         i_en : in std_logic;
         o_instr : out std_logic_vector(31 downto 0);
@@ -46,19 +47,29 @@ architecture Behavioral of mock_instr_mem is
         others => (others => '0')
     );
     signal s_instr, s_instr_delay : std_logic_vector(31 downto 0) := (others => '0');
+    signal s_valid, s_valid_delay : std_logic := '0';
 
 begin
 
     o_instr <= s_instr_delay;
+    o_valid <= s_valid_delay;
 
     process(i_clk)
     begin
         if rising_edge(i_clk) then
-            if i_en = '1' then
-                s_instr <= s_instr_rom(to_integer(i_addr));
-                o_valid <= '1';
+            if i_reset = '1' then
+                s_instr <= (others => '0');
+                s_instr_delay <= (others => '0');
+                s_valid <= '0';
+                s_valid_delay <= '0';
+            else
+                if i_en = '1' then
+                    s_instr <= s_instr_rom(to_integer(i_addr));
+                    s_valid <= '1';
+                end if;
+                s_instr_delay <= s_instr;
+                s_valid_delay <= s_valid;
             end if;
-            s_instr_delay <= s_instr;
         end if;
     end process;
 

@@ -1,1 +1,1 @@
--intstyle "ise" -incremental -lib "secureip" -o "/home/jarek/sources/rv32i/vhdl/risc-cpu-v2/alu_tb_isim_beh.exe" -prj "/home/jarek/sources/rv32i/vhdl/risc-cpu-v2/alu_tb_beh.prj" "work.alu_tb" 
+-intstyle "ise" -incremental -lib "secureip" -o "/home/jarek/sources/rv32i/vhdl/risc-cpu-v2/mock_instr_mem_tb_isim_beh.exe" -prj "/home/jarek/sources/rv32i/vhdl/risc-cpu-v2/mock_instr_mem_tb_beh.prj" "mock_instr_mem_tb" 
