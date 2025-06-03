@@ -34,9 +34,11 @@ entity instruction_decoder is
     Port (
         i_clk : in std_logic;
         i_reset : in std_logic;
+        i_valid : in std_logic;
         i_instruction : in std_logic_vector(31 downto 0);
         o_imm : out signed(31 downto 0);
-        o_control_signals : out t_control_signals
+        o_control_signals : out t_control_signals;
+        o_valid : out std_logic
     );
 end instruction_decoder;
 
@@ -44,11 +46,13 @@ architecture Behavioral of instruction_decoder is
 
     signal s_imm : signed(31 downto 0) := (others => '0');
     signal s_control_signals : t_control_signals := CONTROL_SIGNALS_DEFAULT;
+    signal s_valid : std_logic := '0';
 
 begin
 
     o_imm <= s_imm;
     o_control_signals <= s_control_signals;
+    o_valid <= s_valid;
 
     process(i_clk)
     begin
@@ -56,7 +60,10 @@ begin
             if i_reset = '1' then
                 s_imm <= (others => '0');
                 s_control_signals <= CONTROL_SIGNALS_DEFAULT;
+                s_valid <= '0';
             else
+                s_valid <= i_valid;
+                
                 s_imm <= (others => '0');
                 
                 s_control_signals.ra <= to_integer(unsigned(i_instruction(19 downto 15)));
@@ -141,6 +148,7 @@ begin
                     when OPCODE_MISC_MEM =>
                     when OPCODE_SYSTEM =>
                     when others =>
+                        s_valid <= '0';
                 end case;
             end if;
         end if;
