@@ -41,9 +41,9 @@ architecture behavior of alu_tb is
          i_clk : in std_logic;
          i_reset : in std_logic;
          i_func : in std_logic_vector(3 downto 0);
-         i_a : in signed(31 downto 0);
-         i_b : in signed(31 downto 0);
-         o_y : out signed(31 downto 0)
+         i_a : in std_logic_vector(31 downto 0);
+         i_b : in std_logic_vector(31 downto 0);
+         o_y : out std_logic_vector(31 downto 0)
         );
     end component;
 
@@ -51,11 +51,11 @@ architecture behavior of alu_tb is
     signal i_clk : std_logic := '0';
     signal i_reset : std_logic := '0';
     signal i_func : std_logic_vector(3 downto 0) := (others => '0');
-    signal i_a : signed(31 downto 0) := (others => '0');
-    signal i_b : signed(31 downto 0) := (others => '0');
+    signal i_a : std_logic_vector(31 downto 0) := (others => '0');
+    signal i_b : std_logic_vector(31 downto 0) := (others => '0');
 
     --Outputs
-    signal o_y : signed(31 downto 0);
+    signal o_y : std_logic_vector(31 downto 0);
 
     -- Clock period definitions
     constant i_clk_period : time := 10 ns;
