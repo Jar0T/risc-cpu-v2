@@ -60,11 +60,13 @@ begin
                                 when "01" => s_data <= std_logic_vector(resize(signed(i_data(15 downto 8)), s_data'length));
                                 when "10" => s_data <= std_logic_vector(resize(signed(i_data(23 downto 16)), s_data'length));
                                 when "11" => s_data <= std_logic_vector(resize(signed(i_data(31 downto 24)), s_data'length));
+                                when others =>
                             end case;
                         when "001" => -- LH
                             case i_addr_low(1) is
                                 when '0' => s_data <= std_logic_vector(resize(signed(i_data(15 downto 0)), s_data'length));
                                 when '1' => s_data <= std_logic_vector(resize(signed(i_data(31 downto 16)), s_data'length));
+                                when others =>
                             end case;
                         when "010" => -- LW
                             s_data <= i_data;
@@ -74,11 +76,13 @@ begin
                                 when "01" => s_data <= std_logic_vector(resize(unsigned(i_data(15 downto 8)), s_data'length));
                                 when "10" => s_data <= std_logic_vector(resize(unsigned(i_data(23 downto 16)), s_data'length));
                                 when "11" => s_data <= std_logic_vector(resize(unsigned(i_data(31 downto 24)), s_data'length));
+                                when others =>
                             end case;
                         when "101" => -- LHU
                             case i_addr_low(1) is
                                 when '0' => s_data <= std_logic_vector(resize(unsigned(i_data(15 downto 0)), s_data'length));
                                 when '1' => s_data <= std_logic_vector(resize(unsigned(i_data(31 downto 16)), s_data'length));
+                                when others =>
                             end case;
                         when others =>
                     end case;
