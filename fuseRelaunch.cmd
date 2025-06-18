@@ -1,1 +1,1 @@
--intstyle "ise" -incremental -lib "secureip" -o "/home/jarek/sources/rv32i/vhdl/risc-cpu-v2/branch_unit_tb_isim_beh.exe" -prj "/home/jarek/sources/rv32i/vhdl/risc-cpu-v2/branch_unit_tb_beh.prj" "work.branch_unit_tb" 
+-intstyle "ise" -incremental -lib "secureip" -o "/home/jarek/sources/rv32i/vhdl/risc-cpu-v2/comparator_tb_isim_beh.exe" -prj "/home/jarek/sources/rv32i/vhdl/risc-cpu-v2/comparator_tb_beh.prj" "work.comparator_tb" 
