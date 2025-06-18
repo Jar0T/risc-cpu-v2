@@ -49,6 +49,9 @@ architecture Behavioral of branch_unit is
 
 begin
 
+    o_branch_addr <= s_branch_addr;
+    o_pc_select <= s_pc_select;
+
     process(i_clk)
     begin
         if rising_edge(i_clk) then
