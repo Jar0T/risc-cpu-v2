@@ -36,7 +36,7 @@ entity instruction_decoder is
         i_reset : in std_logic;
         i_valid : in std_logic;
         i_instruction : in std_logic_vector(31 downto 0);
-        o_imm : out signed(31 downto 0);
+        o_imm : out std_logic_vector(31 downto 0);
         o_control_signals : out t_control_signals
     );
 end instruction_decoder;
@@ -48,7 +48,7 @@ architecture Behavioral of instruction_decoder is
 
 begin
 
-    o_imm <= s_imm;
+    o_imm <= std_logic_vector(s_imm);
     o_control_signals <= s_control_signals;
 
     process(i_clk)
