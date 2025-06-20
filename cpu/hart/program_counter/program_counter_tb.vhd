@@ -39,10 +39,10 @@ architecture behavior of program_counter_tb is
     port(
         i_clk : in std_logic;
         i_reset : in std_logic;
-        i_en : in std_logic;
         i_we : in std_logic;
-        i_pc : in unsigned(31 downto 0);
-        o_pc : out unsigned(31 downto 0)
+        i_pc : in std_logic_vector(31 downto 0);
+        o_pc : out std_logic_vector(31 downto 0);
+        o_pc_plus_4 : out std_logic_vector(31 downto 0)
         );
     end component;
 
@@ -51,10 +51,11 @@ architecture behavior of program_counter_tb is
     signal i_reset : std_logic := '0';
     signal i_en : std_logic := '0';
     signal i_we : std_logic := '0';
-    signal i_pc : unsigned(31 downto 0) := (others => '0');
+    signal i_pc : std_logic_vector(31 downto 0) := (others => '0');
 
     --Outputs
-    signal o_pc : unsigned(31 downto 0);
+    signal o_pc : std_logic_vector(31 downto 0);
+    signal o_pc_plus_4 : std_logic_vector(31 downto 0);
 
     -- Clock period definitions
     constant i_clk_period : time := 10 ns;
@@ -65,10 +66,10 @@ begin
     uut: program_counter port map (
         i_clk => i_clk,
         i_reset => i_reset,
-        i_en => i_en,
         i_we => i_we,
         i_pc => i_pc,
-        o_pc => o_pc
+        o_pc => o_pc,
+        o_pc_plus_4 => o_pc_plus_4
         );
 
     -- Clock process definitions
@@ -82,26 +83,16 @@ begin
     stim_proc: process
     begin		
         -- insert stimulus here
-        wait for i_clk_period * 10;
-        i_en <= '1';
-        wait for i_clk_period * 10;
         i_reset <= '1';
-        wait for i_clk_period * 5;
-        i_en <= '0';
         wait for i_clk_period * 5;
         i_reset <= '0';
         wait for i_clk_period * 10;
-        i_pc <= to_unsigned(256, i_pc'length);
+        i_pc <= std_logic_vector(to_unsigned(256, i_pc'length));
         wait for i_clk_period;
         i_we <= '1';
         wait for i_clk_period;
-        i_en <= '1';
-        wait for i_clk_period;
-        i_en <= '0';
-        wait for i_clk_period;
         i_we <= '0';
         wait for i_clk_period * 10;
-        i_en <= '1';
 
         wait;
     end process;
