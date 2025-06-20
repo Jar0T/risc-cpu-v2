@@ -30,7 +30,6 @@ entity program_counter is
     Port (
         i_clk : in std_logic;
         i_reset : in std_logic;
-        i_en : in std_logic;
         i_we : in std_logic;
         i_pc : in unsigned(31 downto 0);
         o_pc : out unsigned(31 downto 0);
@@ -56,12 +55,10 @@ begin
                 s_pc <= (others => '0');
                 s_pc_plus_4 <= (others => '0');
             else
-                if i_en = '1' then
-                    if i_we = '1' then
-                        s_pc <= i_pc;
-                    else
-                        s_pc <= s_pc_plus_4;
-                    end if;
+                if i_we = '1' then
+                    s_pc <= i_pc;
+                else
+                    s_pc <= s_pc_plus_4;
                 end if;
             end if;
         end if;
