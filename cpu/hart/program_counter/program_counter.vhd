@@ -53,7 +53,6 @@ begin
         if rising_edge(i_clk) then
             if i_reset = '1' then
                 s_pc <= (others => '0');
-                s_pc_plus_4 <= (others => '0');
             else
                 if i_we = '1' then
                     s_pc <= unsigned(i_pc);
