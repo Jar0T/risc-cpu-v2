@@ -30,18 +30,23 @@ entity program_counter is
     Port (
         i_clk : in std_logic;
         i_reset : in std_logic;
-        i_en : in std_logic;
         i_we : in std_logic;
-        i_pc : in unsigned(31 downto 0);
-        o_pc : out unsigned(31 downto 0)
+        i_pc : in std_logic_vector(31 downto 0);
+        o_pc : out std_logic_vector(31 downto 0);
+        o_pc_plus_4 : out std_logic_vector(31 downto 0)
     );
 end program_counter;
 
 architecture Behavioral of program_counter is
 
-    signal s_pc : unsigned(31 downto 0) := (others => '0');
+    signal s_pc, s_pc_plus_4 : unsigned(31 downto 0) := (others => '0');
 
 begin
+    
+    o_pc <= std_logic_vector(s_pc);
+    o_pc_plus_4 <= std_logic_vector(s_pc_plus_4);
+
+    s_pc_plus_4 <= s_pc + to_unsigned(4, s_pc'length);
 
     process(i_clk)
     begin
@@ -49,18 +54,14 @@ begin
             if i_reset = '1' then
                 s_pc <= (others => '0');
             else
-                if i_en = '1' then
-                    if i_we = '1' then
-                        s_pc <= i_pc;
-                    else
-                        s_pc <= s_pc + to_unsigned(4, s_pc'length);
-                    end if;
+                if i_we = '1' then
+                    s_pc <= unsigned(i_pc);
+                else
+                    s_pc <= s_pc_plus_4;
                 end if;
             end if;
         end if;
     end process;
-    
-    o_pc <= s_pc;
 
 end Behavioral;
 
