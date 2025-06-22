@@ -71,38 +71,42 @@ begin
                 s_en <= i_read or i_write;
                 s_addr <= i_addr(31 downto 2);
                 
-                case i_funct3 is
-                    when "000" => -- SB
-                        case i_addr(1 downto 0) is
-                            when "00" =>
-                                s_we <= "0001";
-                                s_data(7 downto 0) <= i_rs2(7 downto 0);
-                            when "01" =>
-                                s_we <= "0010";
-                                s_data(15 downto 8) <= i_rs2(7 downto 0);
-                            when "10" =>
-                                s_we <= "0100";
-                                s_data(23 downto 16) <= i_rs2(7 downto 0);
-                            when "11" =>
-                                s_we <= "1000";
-                                s_data(31 downto 24) <= i_rs2(7 downto 0);
-                            when others =>
-                        end case;
-                    when "001" => -- SH
-                        case i_addr(1) is
-                            when '0' =>
-                                s_we <= "0011";
-                                s_data(15 downto 0) <= i_rs2(15 downto 0);
-                            when '1' =>
-                                s_we <= "1100";
-                                s_data(31 downto 16) <= i_rs2(15 downto 0);
-                            when others =>
-                        end case;
-                    when "010" => -- SW
-                        s_we <= "1111";
-                        s_data <= i_rs2;
-                    when others =>
-                end case;
+                if i_write = '1' then
+                    case i_funct3 is
+                        when "000" => -- SB
+                            case i_addr(1 downto 0) is
+                                when "00" =>
+                                    s_we <= "0001";
+                                    s_data(7 downto 0) <= i_rs2(7 downto 0);
+                                when "01" =>
+                                    s_we <= "0010";
+                                    s_data(15 downto 8) <= i_rs2(7 downto 0);
+                                when "10" =>
+                                    s_we <= "0100";
+                                    s_data(23 downto 16) <= i_rs2(7 downto 0);
+                                when "11" =>
+                                    s_we <= "1000";
+                                    s_data(31 downto 24) <= i_rs2(7 downto 0);
+                                when others =>
+                            end case;
+                        when "001" => -- SH
+                            case i_addr(1) is
+                                when '0' =>
+                                    s_we <= "0011";
+                                    s_data(15 downto 0) <= i_rs2(15 downto 0);
+                                when '1' =>
+                                    s_we <= "1100";
+                                    s_data(31 downto 16) <= i_rs2(15 downto 0);
+                                when others =>
+                            end case;
+                        when "010" => -- SW
+                            s_we <= "1111";
+                            s_data <= i_rs2;
+                        when others =>
+                    end case;
+                else
+                    s_we <= (others => '0');
+                end if;
             end if;
         end if;
     end process;
