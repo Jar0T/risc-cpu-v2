@@ -36,7 +36,9 @@ entity register_file is
         o_data_a : out std_logic_vector(31 downto 0);
         o_data_b : out std_logic_vector(31 downto 0);
         i_data_d : in std_logic_vector(31 downto 0);
-        i_we_d : in std_logic
+        i_we_d : in std_logic;
+        i_valid : in std_logic;
+        o_valid : out std_logic
     );
 end register_file;
 
@@ -46,11 +48,26 @@ architecture Behavioral of register_file is
     signal s_register_file : t_register_file := (others => (others => '0'));
     
     signal s_data_a, s_data_b : std_logic_vector(31 downto 0) := (others => '0');
+    
+    signal s_valid : std_logic := '0';
 
 begin
 
     o_data_a <= s_data_a;
     o_data_b <= s_data_b;
+    
+    o_valid <= s_valid;
+    
+    process(i_clk)
+    begin
+        if rising_edge(i_clk) then
+            if i_reset = '1' then
+                s_valid <= '0';
+            else
+                s_valid <= i_valid;
+            end if;
+        end if;
+    end process;
 
     process(i_clk)
     begin
@@ -59,16 +76,18 @@ begin
                 s_data_a <= (others => '0');
                 s_data_b <= (others => '0');
             else
-                if i_addr_a = 0 then
-                    s_data_a <= (others => '0');
-                else
-                    s_data_a <= s_register_file(i_addr_a);
-                end if;
-            
-                if i_addr_b = 0 then
-                    s_data_b <= (others => '0');
-                else
-                    s_data_b <= s_register_file(i_addr_b);
+                if i_valid = '1' then
+                    if i_addr_a = 0 then
+                        s_data_a <= (others => '0');
+                    else
+                        s_data_a <= s_register_file(i_addr_a);
+                    end if;
+                
+                    if i_addr_b = 0 then
+                        s_data_b <= (others => '0');
+                    else
+                        s_data_b <= s_register_file(i_addr_b);
+                    end if;
                 end if;
                 
                 if i_we_d = '1' then

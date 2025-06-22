@@ -46,7 +46,9 @@ architecture behavior of register_file_tb is
         o_data_a : out std_logic_vector(31 downto 0);
         o_data_b : out std_logic_vector(31 downto 0);
         i_data_d : in std_logic_vector(31 downto 0);
-        i_we_d : in std_logic
+        i_we_d : in std_logic;
+        i_valid : in std_logic;
+        o_valid : out std_logic
         );
     end component;
 
@@ -58,10 +60,12 @@ architecture behavior of register_file_tb is
     signal i_addr_d : integer range 0 to 31 := 0;
     signal i_data_d : std_logic_vector(31 downto 0) := (others => '0');
     signal i_we_d : std_logic := '0';
+    signal i_valid : std_logic := '0';
 
     --Outputs
     signal o_data_a : std_logic_vector(31 downto 0);
     signal o_data_b : std_logic_vector(31 downto 0);
+    signal o_valid : std_logic;
 
     -- Clock period definitions
     constant i_clk_period : time := 10 ns;
@@ -78,13 +82,17 @@ begin
         o_data_a => o_data_a,
         o_data_b => o_data_b,
         i_data_d => i_data_d,
-        i_we_d => i_we_d
+        i_we_d => i_we_d,
+        i_valid => i_valid,
+        o_valid => o_valid
         );
 
     -- Clock process definitions
     i_clk_process :process
     begin
-        i_clk <= not i_clk;
+        i_clk <= '0';
+        wait for i_clk_period/2;
+        i_clk <= '1';
         wait for i_clk_period/2;
     end process;
 
@@ -102,6 +110,19 @@ begin
         i_we_d <= '0';
         wait for i_clk_period;
         
+        for i in 0 to 31 loop
+            i_addr_a <= i;
+            wait for i_clk_period;
+        end loop;
+        wait for i_clk_period;
+        
+        for i in 0 to 31 loop
+            i_addr_b <= i;
+            wait for i_clk_period;
+        end loop;
+        wait for i_clk_period;
+        
+        i_valid <= '1';
         for i in 0 to 31 loop
             i_addr_a <= i;
             wait for i_clk_period;

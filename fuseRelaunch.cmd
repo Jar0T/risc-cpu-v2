@@ -1,1 +1,1 @@
--intstyle "ise" -incremental -lib "secureip" -o "/home/jarek/sources/rv32i/vhdl/risc-cpu-v2/instruction_decoder_tb_isim_beh.exe" -prj "/home/jarek/sources/rv32i/vhdl/risc-cpu-v2/instruction_decoder_tb_beh.prj" "instruction_decoder_tb" 
+-intstyle "ise" -incremental -lib "secureip" -o "/home/jarek/sources/rv32i/vhdl/risc-cpu-v2/register_file_tb_isim_beh.exe" -prj "/home/jarek/sources/rv32i/vhdl/risc-cpu-v2/register_file_tb_beh.prj" "register_file_tb" 
