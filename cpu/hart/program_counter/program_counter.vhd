@@ -33,18 +33,21 @@ entity program_counter is
         i_we : in std_logic;
         i_pc : in std_logic_vector(31 downto 0);
         o_pc : out std_logic_vector(31 downto 0);
-        o_pc_plus_4 : out std_logic_vector(31 downto 0)
+        o_pc_plus_4 : out std_logic_vector(31 downto 0);
+        o_valid : out std_logic
     );
 end program_counter;
 
 architecture Behavioral of program_counter is
 
     signal s_pc, s_pc_plus_4 : unsigned(31 downto 0) := (others => '0');
+    signal s_valid : std_logic := '0';
 
 begin
     
     o_pc <= std_logic_vector(s_pc);
     o_pc_plus_4 <= std_logic_vector(s_pc_plus_4);
+    o_valid <= s_valid;
 
     s_pc_plus_4 <= s_pc + to_unsigned(4, s_pc'length);
 
@@ -53,11 +56,16 @@ begin
         if rising_edge(i_clk) then
             if i_reset = '1' then
                 s_pc <= (others => '0');
+                s_valid <= '0';
             else
-                if i_we = '1' then
-                    s_pc <= unsigned(i_pc);
+                if s_valid = '0' then
+                    s_valid <= '1';
                 else
-                    s_pc <= s_pc_plus_4;
+                    if i_we = '1' then
+                        s_pc <= unsigned(i_pc);
+                    else
+                        s_pc <= s_pc_plus_4;
+                    end if;
                 end if;
             end if;
         end if;

@@ -1,1 +1,1 @@
--intstyle "ise" -incremental -lib "secureip" -o "/home/jarek/sources/rv32i/vhdl/risc-cpu-v2/hart_tb_isim_beh.exe" -prj "/home/jarek/sources/rv32i/vhdl/risc-cpu-v2/hart_tb_beh.prj" "hart_tb" 
+-intstyle "ise" -incremental -lib "secureip" -o "/home/jarek/sources/rv32i/vhdl/risc-cpu-v2/program_counter_tb_isim_beh.exe" -prj "/home/jarek/sources/rv32i/vhdl/risc-cpu-v2/program_counter_tb_beh.prj" "program_counter_tb" 

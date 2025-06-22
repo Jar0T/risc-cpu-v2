@@ -42,7 +42,8 @@ architecture behavior of program_counter_tb is
         i_we : in std_logic;
         i_pc : in std_logic_vector(31 downto 0);
         o_pc : out std_logic_vector(31 downto 0);
-        o_pc_plus_4 : out std_logic_vector(31 downto 0)
+        o_pc_plus_4 : out std_logic_vector(31 downto 0);
+        o_valid : out std_logic
         );
     end component;
 
@@ -56,6 +57,7 @@ architecture behavior of program_counter_tb is
     --Outputs
     signal o_pc : std_logic_vector(31 downto 0);
     signal o_pc_plus_4 : std_logic_vector(31 downto 0);
+    signal o_valid : std_logic;
 
     -- Clock period definitions
     constant i_clk_period : time := 10 ns;
@@ -69,14 +71,15 @@ begin
         i_we => i_we,
         i_pc => i_pc,
         o_pc => o_pc,
-        o_pc_plus_4 => o_pc_plus_4
+        o_pc_plus_4 => o_pc_plus_4,
+        o_valid => o_valid
         );
 
     -- Clock process definitions
     i_clk_process :process
     begin
-        i_clk <= not i_clk;
         wait for i_clk_period/2;
+        i_clk <= not i_clk;
     end process;
 
     -- Stimulus process
