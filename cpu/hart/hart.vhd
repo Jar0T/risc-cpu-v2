@@ -85,26 +85,19 @@ architecture RTL of hart is
         i_we_d : in std_logic
     );
     end component;
-
-    component alu is
+    
+    component execute_unit is
     port (
         i_clk : in std_logic;
         i_reset : in std_logic;
-        i_func : in std_logic_vector(3 downto 0);
+        i_funct4 : in std_logic_vector(3 downto 0);
+        i_funct3 : in std_logic_vector(2 downto 0);
         i_a : in std_logic_vector(31 downto 0);
         i_b : in std_logic_vector(31 downto 0);
-        o_y : out std_logic_vector(31 downto 0)
-    );
-    end component;
-    
-    component comparator is
-    port (
-        i_clk : in std_logic;
-        i_reset : in std_logic;
         i_rs1 : in std_logic_vector(31 downto 0);
         i_rs2 : in std_logic_vector(31 downto 0);
-        i_funct3 : in std_logic_vector(2 downto 0);
-        o_result : out std_logic
+        o_y : out std_logic_vector(31 downto 0);
+        o_cmp_resut : out std_logic
     );
     end component;
     
@@ -245,21 +238,16 @@ begin
     s_data_a <= s_rs1 when s_control_signals_reg_file.alu_src_a = '0' else s_pc_reg_file;
     s_data_b <= s_rs2 when s_control_signals_reg_file.alu_src_b = '0' else s_imm_reg_file;
     
-    i_alu : alu port map(
+    i_execute_unit : execute_unit port map(
         i_clk => i_clk,
         i_reset => i_reset,
         i_func => s_control_signals_reg_file.funct4,
+        i_funct3 => s_control_signals_reg_file.funct3,
         i_a => s_data_a,
         i_b => s_data_b,
-        o_y => s_result
-    );
-    
-    i_comparator : comparator port map(
-        i_clk => i_clk,
-        i_reset => i_reset,
         i_rs1 => s_rs1,
         i_rs2 => s_rs2,
-        i_funct3 => s_control_signals_reg_file.funct3,
+        o_y => s_result,
         o_result => s_cmp_result
     );
     
