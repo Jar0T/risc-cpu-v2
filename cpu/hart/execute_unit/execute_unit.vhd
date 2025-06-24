@@ -44,7 +44,7 @@ entity execute_unit is
     );
 end execute_unit;
 
-architecture Behavioral of execute_unit is
+architecture RTL of execute_unit is
 
     component alu is
     port (
@@ -88,5 +88,5 @@ begin
         o_result => o_cmp_resut
     );
 
-end Behavioral;
+end RTL;
 
