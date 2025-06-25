@@ -33,6 +33,8 @@ entity execute_unit is
     port (
         i_clk : in std_logic;
         i_reset : in std_logic;
+        i_valid : in std_logic;
+        o_valid : out std_logic;
         i_funct4 : in std_logic_vector(3 downto 0);
         i_funct3 : in std_logic_vector(2 downto 0);
         i_a : in std_logic_vector(31 downto 0);
@@ -67,8 +69,12 @@ architecture RTL of execute_unit is
         o_result : out std_logic
     );
     end component;
+    
+    signal s_valid : std_logic := '0';
 
 begin
+
+    o_valid <= s_valid;
 
     i_alu : alu port map(
         i_clk => i_clk,
@@ -87,6 +93,17 @@ begin
         i_funct3 => i_funct3,
         o_result => o_cmp_resut
     );
+    
+    process(i_clk)
+    begin
+        if rising_edge(i_clk) then
+            if i_reset = '1' then
+                s_valid <= '0';
+            else
+                s_valid <= i_valid;
+            end if;
+        end if;
+    end process;
 
 end RTL;
 
